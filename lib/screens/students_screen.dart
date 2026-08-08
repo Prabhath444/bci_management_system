@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/course.dart';
 import '../models/student.dart';
 import '../state/bci_store.dart';
+import '../validators/student_validator.dart';
 
 class StudentsScreen extends StatefulWidget {
   const StudentsScreen({super.key, required this.store});
@@ -293,6 +294,7 @@ class _StudentFormDialog extends StatefulWidget {
 
 class _StudentFormDialogState extends State<_StudentFormDialog> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final StudentValidator _validator = const StudentValidator();
   late final TextEditingController _idController;
   late final TextEditingController _nameController;
   late final TextEditingController _emailController;
@@ -338,34 +340,34 @@ class _StudentFormDialogState extends State<_StudentFormDialog> {
                 _RequiredField(
                   controller: _idController,
                   label: 'Student ID',
-                  validator: (String value) {
-                    final bool duplicate = widget.store.students.any(
-                      (Student item) =>
-                          item.id.toLowerCase() == value.toLowerCase() &&
-                          item.id != widget.student?.id,
-                    );
-                    return duplicate ? 'Student ID already exists.' : null;
-                  },
+                  validator: (String value) => _validator.validateId(
+                    value,
+                    widget.store.students,
+                    originalId: widget.student?.id,
+                  ),
                 ),
                 _RequiredField(
                   controller: _nameController,
                   label: 'Full Name',
+                  validator: _validator.validateName,
                 ),
                 _RequiredField(
                   controller: _emailController,
                   label: 'Email',
                   keyboardType: TextInputType.emailAddress,
-                  validator: (String value) => value.contains('@')
-                      ? null
-                      : 'Enter a valid email address.',
+                  validator: _validator.validateEmail,
                 ),
                 _RequiredField(
                   controller: _programmeController,
                   label: 'Programme',
+                  validator: (String value) =>
+                      _validator.required(value, 'Programme'),
                 ),
                 _RequiredField(
                   controller: _intakeController,
                   label: 'Intake',
+                  validator: (String value) =>
+                      _validator.required(value, 'Intake'),
                 ),
                 DropdownButtonFormField<String>(
                   initialValue: _status,
@@ -430,14 +432,14 @@ class _RequiredField extends StatelessWidget {
   const _RequiredField({
     required this.controller,
     required this.label,
+    required this.validator,
     this.keyboardType,
-    this.validator,
   });
 
   final TextEditingController controller;
   final String label;
   final TextInputType? keyboardType;
-  final String? Function(String value)? validator;
+  final String? Function(String value) validator;
 
   @override
   Widget build(BuildContext context) {
@@ -450,13 +452,7 @@ class _RequiredField extends StatelessWidget {
           labelText: label,
           border: const OutlineInputBorder(),
         ),
-        validator: (String? value) {
-          final String text = value?.trim() ?? '';
-          if (text.isEmpty) {
-            return '$label is required.';
-          }
-          return validator?.call(text);
-        },
+        validator: (String? value) => validator(value ?? ''),
       ),
     );
   }

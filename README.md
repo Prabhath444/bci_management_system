@@ -11,6 +11,17 @@ Data is currently stored in memory for demonstration and teaching. Closing the
 application clears newly entered records. The next production step is to connect
 this UI to a Spring Boot REST API and PostgreSQL database.
 
+## SOLID design
+
+- **SRP:** models, form validators, repositories, state coordination, and UI are
+  separated by responsibility.
+- **OCP/LSP:** another student, course, or employee data source can implement the
+  same repository contract and replace the in-memory implementation.
+- **ISP:** student, course, and employee persistence use separate focused
+  interfaces instead of one large data interface.
+- **DIP:** `BciStore` depends on repository abstractions, while `main.dart`
+  selects and injects the concrete in-memory repositories.
+
 ## Features
 
 - Responsive dashboard for mobile and desktop/web widths

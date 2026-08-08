@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'repositories/course_repository.dart';
+import 'repositories/employee_repository.dart';
+import 'repositories/student_repository.dart';
 import 'screens/home_shell.dart';
 import 'state/bci_store.dart';
 
@@ -15,7 +18,13 @@ class BciManagementApp extends StatefulWidget {
 }
 
 class _BciManagementAppState extends State<BciManagementApp> {
-  final BciStore _store = BciStore();
+  // Composition root: concrete data sources are injected from outside the
+  // high-level store (Dependency Inversion Principle).
+  final BciStore _store = BciStore(
+    studentRepository: InMemoryStudentRepository.withSampleData(),
+    courseRepository: InMemoryCourseRepository.withSampleData(),
+    employeeRepository: InMemoryEmployeeRepository.withSampleData(),
+  );
 
   @override
   void dispose() {

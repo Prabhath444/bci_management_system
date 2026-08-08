@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/course.dart';
 import '../state/bci_store.dart';
+import '../validators/course_validator.dart';
 
 class CoursesScreen extends StatefulWidget {
   const CoursesScreen({super.key, required this.store});
@@ -224,6 +225,7 @@ class _CourseFormDialog extends StatefulWidget {
 
 class _CourseFormDialogState extends State<_CourseFormDialog> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final CourseValidator _validator = const CourseValidator();
   late final TextEditingController _idController;
   late final TextEditingController _nameController;
   late final TextEditingController _durationController;
@@ -264,26 +266,29 @@ class _CourseFormDialogState extends State<_CourseFormDialog> {
                 _CourseField(
                   controller: _idController,
                   label: 'Course Code',
-                  validator: (String value) {
-                    final bool duplicate = widget.store.courses.any(
-                      (Course item) =>
-                          item.id.toLowerCase() == value.toLowerCase() &&
-                          item.id != widget.course?.id,
-                    );
-                    return duplicate ? 'Course code already exists.' : null;
-                  },
+                  validator: (String value) => _validator.validateId(
+                    value,
+                    widget.store.courses,
+                    originalId: widget.course?.id,
+                  ),
                 ),
                 _CourseField(
                   controller: _nameController,
                   label: 'Course Name',
+                  validator: (String value) =>
+                      _validator.required(value, 'Course Name'),
                 ),
                 _CourseField(
                   controller: _durationController,
                   label: 'Duration',
+                  validator: (String value) =>
+                      _validator.required(value, 'Duration'),
                 ),
                 _CourseField(
                   controller: _descriptionController,
                   label: 'Description',
+                  validator: (String value) =>
+                      _validator.required(value, 'Description'),
                   maxLines: 3,
                 ),
               ],
@@ -324,13 +329,13 @@ class _CourseField extends StatelessWidget {
   const _CourseField({
     required this.controller,
     required this.label,
-    this.validator,
+    required this.validator,
     this.maxLines = 1,
   });
 
   final TextEditingController controller;
   final String label;
-  final String? Function(String value)? validator;
+  final String? Function(String value) validator;
   final int maxLines;
 
   @override
@@ -344,13 +349,7 @@ class _CourseField extends StatelessWidget {
           labelText: label,
           border: const OutlineInputBorder(),
         ),
-        validator: (String? value) {
-          final String text = value?.trim() ?? '';
-          if (text.isEmpty) {
-            return '$label is required.';
-          }
-          return validator?.call(text);
-        },
+        validator: (String? value) => validator(value ?? ''),
       ),
     );
   }
