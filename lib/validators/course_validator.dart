@@ -1,4 +1,5 @@
 import '../models/course.dart';
+import 'form_validators.dart';
 
 /// Contains course form rules only (Single Responsibility Principle).
 class CourseValidator {
@@ -9,7 +10,7 @@ class CourseValidator {
     Iterable<Course> courses, {
     String? originalId,
   }) {
-    final String? requiredError = required(value, 'Course Code');
+    final String? requiredError = FormValidators.required(value, 'Course Code');
     if (requiredError != null) {
       return requiredError;
     }
@@ -20,9 +21,5 @@ class CourseValidator {
           course.id != originalId,
     );
     return duplicate ? 'Course code already exists.' : null;
-  }
-
-  String? required(String value, String label) {
-    return value.trim().isEmpty ? '$label is required.' : null;
   }
 }

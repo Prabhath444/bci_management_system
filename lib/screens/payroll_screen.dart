@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../models/employee.dart';
 import '../state/bci_store.dart';
+import '../widgets/app_form_field.dart';
+import '../widgets/screen_title.dart';
 
 class PayrollScreen extends StatelessWidget {
   const PayrollScreen({super.key, required this.store});
@@ -14,12 +16,7 @@ class PayrollScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
         children: <Widget>[
-          Text(
-            'Payroll Management',
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
+          const ScreenTitle('Payroll Management'),
           const SizedBox(height: 6),
           Text(
             'Monthly salary calculation for BCI employees',
@@ -159,34 +156,29 @@ class PayrollScreen extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  _TextEntry(controller: id, label: 'Employee ID'),
-                  _TextEntry(controller: name, label: 'Full Name'),
-                  _TextEntry(controller: department, label: 'Department'),
-                  _TextEntry(controller: designation, label: 'Designation'),
-                  _TextEntry(
+                  AppFormField(controller: id, label: 'Employee ID'),
+                  AppFormField(controller: name, label: 'Full Name'),
+                  AppFormField(controller: department, label: 'Department'),
+                  AppFormField(controller: designation, label: 'Designation'),
+                  AppFormField.number(
                     controller: basic,
                     label: 'Basic Salary (LKR)',
-                    numeric: true,
                   ),
-                  _TextEntry(
+                  AppFormField.number(
                     controller: allowances,
                     label: 'Allowances (LKR)',
-                    numeric: true,
                   ),
-                  _TextEntry(
+                  AppFormField.number(
                     controller: overtime,
                     label: 'Overtime (LKR)',
-                    numeric: true,
                   ),
-                  _TextEntry(
+                  AppFormField.number(
                     controller: deductions,
                     label: 'Other Deductions (LKR)',
-                    numeric: true,
                   ),
-                  _TextEntry(
+                  AppFormField.number(
                     controller: tax,
                     label: 'Tax (LKR)',
-                    numeric: true,
                   ),
                 ],
               ),
@@ -267,44 +259,6 @@ class _SalaryRow extends StatelessWidget {
           Expanded(child: Text(label, style: style)),
           Text('LKR ${value.toStringAsFixed(2)}', style: style),
         ],
-      ),
-    );
-  }
-}
-
-class _TextEntry extends StatelessWidget {
-  const _TextEntry({
-    required this.controller,
-    required this.label,
-    this.numeric = false,
-  });
-
-  final TextEditingController controller;
-  final String label;
-  final bool numeric;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: TextFormField(
-        controller: controller,
-        keyboardType: numeric
-            ? const TextInputType.numberWithOptions(decimal: true)
-            : TextInputType.text,
-        decoration: InputDecoration(
-          labelText: label,
-          border: const OutlineInputBorder(),
-        ),
-        validator: (String? value) {
-          if (value == null || value.trim().isEmpty) {
-            return '$label is required.';
-          }
-          if (numeric && double.tryParse(value.trim()) == null) {
-            return 'Enter a valid numerical amount.';
-          }
-          return null;
-        },
       ),
     );
   }

@@ -22,6 +22,15 @@ this UI to a Spring Boot REST API and PostgreSQL database.
 - **DIP:** `BciStore` depends on repository abstractions, while `main.dart`
   selects and injects the concrete in-memory repositories.
 
+## DRY Refactoring
+
+- `AppFormField` replaces the repeated student, course, and payroll text-field
+  widgets and provides one consistent field layout.
+- `FormValidators` keeps required, email, and numeric validation rules in one
+  place; specialised validators reuse those shared rules.
+- `ScreenTitle` provides the shared heading style used across the dashboard,
+  student, course, and payroll screens.
+
 ## Features
 
 - Responsive dashboard for mobile and desktop/web widths

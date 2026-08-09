@@ -1,4 +1,5 @@
 import '../models/student.dart';
+import 'form_validators.dart';
 
 /// Contains student form rules only (Single Responsibility Principle).
 class StudentValidator {
@@ -9,7 +10,7 @@ class StudentValidator {
     Iterable<Student> students, {
     String? originalId,
   }) {
-    final String? requiredError = required(value, 'Student ID');
+    final String? requiredError = FormValidators.required(value, 'Student ID');
     if (requiredError != null) {
       return requiredError;
     }
@@ -23,7 +24,7 @@ class StudentValidator {
   }
 
   String? validateName(String value) {
-    final String? requiredError = required(value, 'Full Name');
+    final String? requiredError = FormValidators.required(value, 'Full Name');
     if (requiredError != null) {
       return requiredError;
     }
@@ -31,17 +32,6 @@ class StudentValidator {
   }
 
   String? validateEmail(String value) {
-    final String? requiredError = required(value, 'Email');
-    if (requiredError != null) {
-      return requiredError;
-    }
-    final String email = value.trim();
-    return email.contains('@') && email.contains('.')
-        ? null
-        : 'Enter a valid email address.';
-  }
-
-  String? required(String value, String label) {
-    return value.trim().isEmpty ? '$label is required.' : null;
+    return FormValidators.email(value, 'Email');
   }
 }

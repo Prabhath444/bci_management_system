@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../state/bci_store.dart';
+import '../widgets/screen_title.dart';
 import '../widgets/summary_card.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -13,12 +14,7 @@ class DashboardScreen extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(20),
       children: <Widget>[
-        Text(
-          'BCI Management Dashboard',
-          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-        ),
+        const ScreenTitle('BCI Management Dashboard'),
         const SizedBox(height: 6),
         Text(
           'Student, course and monthly payroll overview',

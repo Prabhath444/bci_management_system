@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../models/course.dart';
 import '../state/bci_store.dart';
 import '../validators/course_validator.dart';
+import '../widgets/app_form_field.dart';
+import '../widgets/screen_title.dart';
 
 class CoursesScreen extends StatefulWidget {
   const CoursesScreen({super.key, required this.store});
@@ -32,12 +34,7 @@ class _CoursesScreenState extends State<CoursesScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(
-                  'Course Management',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
+                const ScreenTitle('Course Management'),
                 const SizedBox(height: 14),
                 TextField(
                   decoration: const InputDecoration(
@@ -263,7 +260,7 @@ class _CourseFormDialogState extends State<_CourseFormDialog> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                _CourseField(
+                AppFormField(
                   controller: _idController,
                   label: 'Course Code',
                   validator: (String value) => _validator.validateId(
@@ -272,23 +269,17 @@ class _CourseFormDialogState extends State<_CourseFormDialog> {
                     originalId: widget.course?.id,
                   ),
                 ),
-                _CourseField(
+                AppFormField(
                   controller: _nameController,
                   label: 'Course Name',
-                  validator: (String value) =>
-                      _validator.required(value, 'Course Name'),
                 ),
-                _CourseField(
+                AppFormField(
                   controller: _durationController,
                   label: 'Duration',
-                  validator: (String value) =>
-                      _validator.required(value, 'Duration'),
                 ),
-                _CourseField(
+                AppFormField(
                   controller: _descriptionController,
                   label: 'Description',
-                  validator: (String value) =>
-                      _validator.required(value, 'Description'),
                   maxLines: 3,
                 ),
               ],
@@ -320,36 +311,6 @@ class _CourseFormDialogState extends State<_CourseFormDialog> {
         name: _nameController.text.trim(),
         duration: _durationController.text.trim(),
         description: _descriptionController.text.trim(),
-      ),
-    );
-  }
-}
-
-class _CourseField extends StatelessWidget {
-  const _CourseField({
-    required this.controller,
-    required this.label,
-    required this.validator,
-    this.maxLines = 1,
-  });
-
-  final TextEditingController controller;
-  final String label;
-  final String? Function(String value) validator;
-  final int maxLines;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: TextFormField(
-        controller: controller,
-        maxLines: maxLines,
-        decoration: InputDecoration(
-          labelText: label,
-          border: const OutlineInputBorder(),
-        ),
-        validator: (String? value) => validator(value ?? ''),
       ),
     );
   }

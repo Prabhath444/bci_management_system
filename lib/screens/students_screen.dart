@@ -4,6 +4,8 @@ import '../models/course.dart';
 import '../models/student.dart';
 import '../state/bci_store.dart';
 import '../validators/student_validator.dart';
+import '../widgets/app_form_field.dart';
+import '../widgets/screen_title.dart';
 
 class StudentsScreen extends StatefulWidget {
   const StudentsScreen({super.key, required this.store});
@@ -35,12 +37,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(
-                  'Student Management',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
+                const ScreenTitle('Student Management'),
                 const SizedBox(height: 14),
                 TextField(
                   decoration: const InputDecoration(
@@ -337,7 +334,7 @@ class _StudentFormDialogState extends State<_StudentFormDialog> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                _RequiredField(
+                AppFormField(
                   controller: _idController,
                   label: 'Student ID',
                   validator: (String value) => _validator.validateId(
@@ -346,28 +343,24 @@ class _StudentFormDialogState extends State<_StudentFormDialog> {
                     originalId: widget.student?.id,
                   ),
                 ),
-                _RequiredField(
+                AppFormField(
                   controller: _nameController,
                   label: 'Full Name',
                   validator: _validator.validateName,
                 ),
-                _RequiredField(
+                AppFormField(
                   controller: _emailController,
                   label: 'Email',
                   keyboardType: TextInputType.emailAddress,
                   validator: _validator.validateEmail,
                 ),
-                _RequiredField(
+                AppFormField(
                   controller: _programmeController,
                   label: 'Programme',
-                  validator: (String value) =>
-                      _validator.required(value, 'Programme'),
                 ),
-                _RequiredField(
+                AppFormField(
                   controller: _intakeController,
                   label: 'Intake',
-                  validator: (String value) =>
-                      _validator.required(value, 'Intake'),
                 ),
                 DropdownButtonFormField<String>(
                   initialValue: _status,
@@ -423,36 +416,6 @@ class _StudentFormDialogState extends State<_StudentFormDialog> {
         intake: _intakeController.text.trim(),
         status: _status,
         courseIds: widget.student?.courseIds ?? const <String>[],
-      ),
-    );
-  }
-}
-
-class _RequiredField extends StatelessWidget {
-  const _RequiredField({
-    required this.controller,
-    required this.label,
-    required this.validator,
-    this.keyboardType,
-  });
-
-  final TextEditingController controller;
-  final String label;
-  final TextInputType? keyboardType;
-  final String? Function(String value) validator;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: TextFormField(
-        controller: controller,
-        keyboardType: keyboardType,
-        decoration: InputDecoration(
-          labelText: label,
-          border: const OutlineInputBorder(),
-        ),
-        validator: (String? value) => validator(value ?? ''),
       ),
     );
   }
